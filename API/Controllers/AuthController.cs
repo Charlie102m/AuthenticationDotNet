@@ -65,9 +65,9 @@ namespace API.Controllers
         {
             LogHttpRequest(HttpContext);
 
-            var user = await _manager.LoginAsync(userForLogin);
+            var token = await _manager.LoginAsync(userForLogin);
 
-            return Ok(user);
+            return Ok(new {token});
         }
 
         private void LogHttpRequest(HttpContext context)

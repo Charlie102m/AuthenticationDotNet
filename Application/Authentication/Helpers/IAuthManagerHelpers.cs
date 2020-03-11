@@ -1,4 +1,6 @@
-﻿namespace Application.Authentication.Helpers
+﻿using DAL.Entities;
+
+namespace Application.Authentication.Helpers
 {
     /// <summary>
     /// Helper methods for the authentication manager
@@ -20,5 +22,13 @@
         /// <param name="passwordSalt">password salt</param>
         /// <returns>Boolean representing success of match</returns>
         bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt);
+
+        /// <summary>
+        /// Generates a JWT
+        /// </summary>
+        /// <param name="user">user for JWT claims</param>
+        /// <param name="tokenSecret">secret from appsettings</param>
+        /// <returns>token string</returns>
+        string GenerateJwtToken(User user, string tokenSecret);
     }
 }

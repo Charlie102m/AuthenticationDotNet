@@ -21,6 +21,6 @@ namespace Application.Authentication.Manager
         /// </summary>
         /// <param name="userForLogin"></param>
         /// <returns></returns>
-        Task<User> LoginAsync(UserForLogin userForLogin);
+        Task<string> LoginAsync(UserForLogin userForLogin);
     }
 }

@@ -14,7 +14,7 @@ namespace API
         {
             var host = CreateHostBuilder(args).Build();
 
-            CreateOrUpdateDatabase(host);
+            // CreateOrUpdateDatabase(host);
                 
             host.Run();
         }

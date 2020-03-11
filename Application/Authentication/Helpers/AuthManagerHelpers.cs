@@ -1,5 +1,10 @@
 ﻿using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using DAL.Entities;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Authentication.Helpers
 {
@@ -46,6 +51,43 @@ namespace Application.Authentication.Helpers
 
                 return computedHash.SequenceEqual(passwordHash);
             }
+        }
+
+        /// <summary>
+        /// Generates a JWT
+        /// </summary>
+        /// <param name="user">user for JWT claims</param>
+        /// <param name="tokenSecret">secret from appsettings</param>
+        /// <returns>token string</returns>
+        public string GenerateJwtToken(User user, string tokenSecret)
+        {
+            if (user == null) throw new ArgumentNullException(nameof(user));
+
+            if (tokenSecret == null) throw new ArgumentNullException(nameof(tokenSecret));
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.FirstName), 
+                new Claim(ClaimTypes.Email, user.Email)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSecret));
+
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var tokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddDays(1),
+                SigningCredentials = credentials
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
         }
     }
 }

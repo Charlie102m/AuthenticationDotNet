@@ -1,8 +1,9 @@
 using Application.Authentication.Helpers;
 using Application.Authentication.Manager;
+using Application.Utils;
 using AutoMapper;
 using DAL;
-using DAL.Interfaces;
+using DAL.DataStore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -24,12 +25,12 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<DataContext>(opt =>
-                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.AddDbContext<DataContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddAutoMapper(typeof(AuthManager).Assembly);
             services.AddScoped<IAuthManager, AuthManager>();
             services.AddScoped<IAuthManagerHelpers, AuthManagerHelpers>();
-            services.AddScoped<IUserInterface, UserInterface>();
+            services.AddScoped<IUserStore, UserStore>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
